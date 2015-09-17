@@ -1,0 +1,7 @@
+coverage
+coveralls
+pytest
+pytest-flask
+pytest-cov
+pep8
+pyflakes
