@@ -14,6 +14,9 @@ def internal_id(lims_sample, udf_key='Clinical Genomics ID'):
 def transform_entry(lims_sample):
     """Transform LIMS sample to dict."""
     data = dict(lims_sample.udf.items())
+    app_tag = analysis_info(lims_sample)
+    # millions of reads
+    target_reads = app_tag['reads'] * 1000000
 
     return {
         'id': lims_sample.id,
@@ -27,9 +30,11 @@ def transform_entry(lims_sample):
         'gene_lists': data['Gene List'].split(';'),
         'gender': data['Gender'],
         'status': data['Status'],
-        'app_tag': data['Sequencing Analysis'],
+        'app_tag_raw': data['Sequencing Analysis'],
+        'app_tag': app_tag,
+        'target_reads': target_reads,
         'data_analysis': data['Data Analysis'],
-        'analysis_type': analysis_type(lims_sample)
+        'analysis_type': ANALYSIS_MAP[app_tag['analysis']]
     }
 
 
@@ -53,5 +58,9 @@ def analysis_info(lims_sample):
 
 def parse_application_tag(app_tag):
     """Parse out the components of the application tag."""
-    return {'analysis': app_tag[:3], 'library': app_tag[3:6],
-            'reads': int(app_tag[7:10])}
+    if len(app_tag) == 8:
+        data = {'analysis': 'EXO', 'library': 'SXT', 'reads': int(app_tag[5:])}
+    elif len(app_tag) == 10:
+        data = {'analysis': app_tag[:3], 'library': app_tag[3:6],
+                'reads': int(app_tag[7:10])}
+    return data

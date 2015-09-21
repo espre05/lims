@@ -20,7 +20,13 @@ api = Api(api_bp)
 def sample(lims_id):
     """Get a sample from LIMS."""
     sample_obj = Sample(lims, id=lims_id)
-    sample_json = transform_entry(sample_obj)
+
+    try:
+        sample_json = transform_entry(sample_obj)
+    except KeyError as error:
+        return abort(400, "missing UDF: {}".format(error.message))
+    except HTTPError as error:
+        return abort(404, error.message)
     return jsonify(**sample_json)
 
 
@@ -38,16 +44,6 @@ def validate_sample(lims_id):
     except HTTPError as error:
         raise LimsSampleNotFoundError(error.message)
     return jsonify(passed=True)
-
-
-@api_bp.route('/samples/target_reads/<lims_id>')
-def target_reads(lims_id):
-    """Determine the amount of reads to be sequenced."""
-    sample_obj = Sample(lims, id=lims_id)
-    app_tag = analysis_info(sample_obj)
-    # millions of reads
-    target_reads = app_tag['reads'] * 1000000
-    return jsonify(target_reads=target_reads, **app_tag)
 
 
 @api_bp.route('/cases/pedigree/<cust_id>/<case_id>')

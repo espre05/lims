@@ -36,3 +36,7 @@ def test_parse_application_tag():
     xt = 'EXOSXTR100'
     assert parse_application_tag(xt) == {'reads': 100, 'library': 'SXT',
                                          'analysis': 'EXO'}
+
+    old_xt = 'EXSTA100'
+    data = parse_application_tag(old_xt)
+    assert data == {'reads': 100, 'library': 'SXT', 'analysis': 'EXO'}
