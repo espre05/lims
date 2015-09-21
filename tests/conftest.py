@@ -19,10 +19,10 @@ def lims():
 
 
 class LimsSample(object):
-    def __init__(self, lims_id, name, date_recieved, project_id, **udfs):
+    def __init__(self, lims_id, name, date_received, project_id, **udfs):
         self.id = lims_id
         self.name = name
-        self.date_recieved = date_recieved
+        self.date_received = date_received
         self.udf = udfs
         self.project = LimsProject(project_id)
 
@@ -38,7 +38,7 @@ def add_samples():
                           customer='cust003', familyID='15045',
                           motherID='15045-II-2U', fatherID='15045-II-1U',
                           Gender='man', Status='affected',
-                          **{'Gene List': 'IEM,EP',
+                          **{'Gene List': 'IEM;EP',
                              'Sequencing Analysis': 'EXOSXTR100',
                              'Data Analysis': 'scout'}),
                LimsSample('ADM1003A5', '15101-II-2U', '2015-03-13', '375994',
