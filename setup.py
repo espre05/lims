@@ -53,4 +53,7 @@ setup(
     ],
     platforms='any',
     license='BSD License',
+    entry_points={
+        'console_scripts': ['lims-ws = lims.cli:main']
+    },
 )
