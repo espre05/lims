@@ -9,6 +9,7 @@ to a more or less standard ``.ped`` file format.
 """
 import logging
 
+from lims.exc import LimsCaseIdNotFoundError
 from .core import analysis_type, collect_case, internal_id
 
 MANDATORY_HEADERS = ('Family ID', 'Individual ID', 'Paternal ID',
@@ -28,6 +29,8 @@ def serialize_pedigree(lims, cust_id, case_id):
     """Write a pedigree file from data in the LIMS."""
     logger.debug("collecting samples from case: %s", case_id)
     samples = collect_case(lims, cust_id, case_id)
+    if len(samples) == 0:
+        raise LimsCaseIdNotFoundError(case_id)
     sample_dict = {sample.name: internal_id(sample) for sample in samples}
 
     logger.debug('extract data from LIMS samples')

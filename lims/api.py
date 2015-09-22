@@ -7,9 +7,10 @@ from flask.ext.restful import Api, Resource
 from genologics.entities import Sample
 from requests.exceptions import HTTPError
 
-from .exc import LimsSampleNotFoundError, MissingLimsDataException
+from .exc import (LimsSampleNotFoundError, LimsCaseIdNotFoundError,
+                  MissingLimsDataException)
 from .extensions import lims
-from .utils import analysis_info, serialize_pedigree, transform_entry
+from .utils import serialize_pedigree, transform_entry
 
 logger = logging.getLogger(__name__)
 api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
@@ -50,7 +51,10 @@ def validate_sample(lims_id):
 def pedigree(cust_id, case_id):
     """Generate pedigree content for a case."""
     out_path = request.args.get('target')
-    ped_content = serialize_pedigree(lims, cust_id, case_id)
+    try:
+        ped_content = serialize_pedigree(lims, cust_id, case_id)
+    except LimsCaseIdNotFoundError:
+        return abort(404, "missing case id: {}".format(case_id))
 
     if out_path:
         try:

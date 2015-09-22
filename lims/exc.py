@@ -11,3 +11,7 @@ class MissingLimsDataException(LimsException, KeyError):
 
 class LimsSampleNotFoundError(LimsException):
     pass
+
+
+class LimsCaseIdNotFoundError(LimsException):
+    pass
