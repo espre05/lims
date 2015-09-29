@@ -55,6 +55,10 @@ def pedigree(cust_id, case_id):
         ped_content = serialize_pedigree(lims, cust_id, case_id)
     except LimsCaseIdNotFoundError:
         return abort(404, "missing case id: {}".format(case_id))
+    except AttributeError as error:
+        return abort(404, error.message)
+    except KeyError as error:
+        return abort(406, "missing sample data: {}".format(error.message))
 
     if out_path:
         try:
