@@ -1,0 +1,6 @@
+Flask>=0.10
+Flask-Script
+Flask-Restful
+genologics
+requests
+gunicorn
