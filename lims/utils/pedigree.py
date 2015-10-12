@@ -63,7 +63,7 @@ def serialize_pedigree(lims, cust_id, case_id):
     return ped_content
 
 
-def get_capturekit(lims, lims_sample, udf_key='Capture kit',
+def get_capturekit(lims, lims_sample, udf_key='Capture Library version',
                    udf_kitkey='Capture Library version'):
     """Figure out which capture kit has been used for the sample."""
     hybrizelib_id = '33'
