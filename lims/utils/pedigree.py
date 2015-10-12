@@ -69,23 +69,24 @@ def get_capturekit(lims, lims_sample, udf_key='Capture Library version',
     hybrizelib_id = '33'
     if udf_key in dict(lims_sample.udf.items()):
         logger.debug('prefer capture kit annotated on the sample level')
-        return lims_sample.udf[udf_key]
+        capture_kit = lims_sample.udf[udf_key]
+    else:
+        artifacts = lims.get_artifacts(samplelimsid=lims_sample.id,
+                                       type='Analyte')
+        capture_kit = None
+        for artifact in artifacts:
+            if artifact.parent_process:
+                if artifact.parent_process.type.id == hybrizelib_id:
+                    try:
+                        capture_kit = artifact.parent_process.udf[udf_kitkey]
+                    except KeyError:
+                        logger.warn('capture kit not found on expected process')
+                        continue
+                    break
 
-    artifacts = lims.get_artifacts(samplelimsid=lims_sample.id, type='Analyte')
-    capture_kit = None
-    for artifact in artifacts:
-        if artifact.parent_process:
-            if artifact.parent_process.type.id == hybrizelib_id:
-                try:
-                    capture_kit = artifact.parent_process.udf[udf_kitkey]
-                except KeyError:
-                    logger.warn('capture kit not found on expected process')
-                    continue
-                break
-
-    # return the MIP capture kit id
-    if capture_kit is None:
-        raise AttributeError('No capture kit annotated')
+        # return the MIP capture kit id
+        if capture_kit is None:
+            raise AttributeError('No capture kit annotated')
 
     return CAPTUREKIT_MAP[capture_kit.strip()]
 
