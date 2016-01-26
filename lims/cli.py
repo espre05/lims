@@ -1,13 +1,24 @@
 # -*- coding: utf-8 -*-
-from flask.ext.script import Manager
+import logging
 
-from .factory import create_app
-from .settings import DevConfig
+import click
+from genologics.lims import Lims
+import yaml
 
-app = create_app(config_obj=DevConfig)
-manager = Manager(app)
+from .subcommands import pedigree_cmd, sample_cmd, samples_cmd
+
+logger = logging.getLogger()
 
 
-def main():
-    """Start microservice."""
-    manager.run()
+@click.group()
+@click.option('-c', '--config', type=click.File('r'))
+@click.pass_context
+def root(context, config):
+    """Root command for CLI."""
+    logger.addHandler(logging.StreamHandler())
+    conf = yaml.load(config)
+    context.obj = {'lims': Lims(**conf['lims'])}
+
+root.add_command(sample_cmd)
+root.add_command(samples_cmd)
+root.add_command(pedigree_cmd)

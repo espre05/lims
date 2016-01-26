@@ -53,7 +53,7 @@ setup(
     install_requires=parse_reqs(),
     cmdclass=dict(test=PyTest),
     zip_safe=False,
-    keywords='pytest flask',
+    keywords='pytest cli',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: BSD License',
@@ -67,6 +67,6 @@ setup(
     platforms='any',
     license='BSD License',
     entry_points={
-        'console_scripts': ['lims-ws = lims.cli:main']
+        'console_scripts': ['lims = lims.cli:root']
     },
 )
