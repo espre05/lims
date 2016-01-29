@@ -1,0 +1,70 @@
+{% macro apptag_table(sample) %}
+    <table class="table">
+        <caption>
+            Application tag
+            <span class="pull-right">{{ sample.app_tag_raw }}</span>
+        </caption>
+        <tbody>
+            <tr>
+                <th>Library</th>
+                <td>{{ sample.app_tag.library }}</td>
+            </tr>
+
+            <tr>
+                <th>Analysis type</th>
+                <td>{{ sample.analysis_type }}</td>
+            </tr>
+
+            <tr>
+                <th>Target reads</th>
+                <td>{{ sample.target_reads|currency }}</td>
+            </tr>
+
+            <tr>
+                <th>Data analysis</th>
+                <td>{{ sample.data_analysis }}</td>
+            </tr>                    
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro general_table(sample) %}
+    <table class="table">
+        <caption>General</caption>
+        <tbody>
+            <tr>
+                <th>Project</th>
+                <td>
+                    <a href="{{ url_for('lims.project', project_id=sample.project_name) }}">{{ sample.project_name }}</a>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Case</th>
+                <td>{{ sample.customer }} <a href="{{ url_for('lims.case', cust_id=sample.customer, case_id=sample.family_id) }}">{{ sample.family_id }}</a></td>
+            </tr>
+
+            <tr>
+                <th>Recieved</th>
+                <td>{{ sample.date_received }}</td>
+            </tr>
+
+            <tr>
+                <th>Sex</th>
+                <td>{{ sample.gender }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro sample_row(sample) %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ general_table(sample) }}  
+        </div>
+
+        <div class="col-md-6">
+            {{ apptag_table(sample) }}
+        </div>
+    </div>
+{% endmacro %}

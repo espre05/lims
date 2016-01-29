@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% import "utils.html" as utils %}
+
+{% block content %}
+    <div class="page-header">
+        <h3>{{ sample.id }} <small>{{ sample.name }}</small></h3>
+    </div>
+
+    {{ utils.sample_row(sample) }}
+{% endblock %}

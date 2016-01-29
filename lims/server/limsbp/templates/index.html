@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="well">
+        <form class="form-horizontal" action="{{ url_for('lims.samples') }}" method="POST" accept-charset="utf-8">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="limsId">Sample LIMS id</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" id="limsId" name="lims_id"></input>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="projectId">Project</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" id="projectId" name="project_id"></input>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="custId">Customer</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" id="custId" name="cust_id"></input>
+                </div>
+
+                <label class="col-sm-1 control-label" for="caseId">Case</label>
+                <div class="col-sm-5">
+                    <input class="form-control" type="text" id="caseId" name="case_id"></input>
+                </div>
+            </div>
+
+            <div class="form-group">
+                
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-default" type="submit">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
