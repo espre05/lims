@@ -2,17 +2,25 @@
 import logging
 
 from flask import (abort, Blueprint, current_app as app, redirect,
-                   render_template, request, url_for)
+                   render_template, request, url_for, jsonify)
 import requests
 
 logger = logging.getLogger(__name__)
-lims_bp = Blueprint('lims', __name__, template_folder='templates')
+lims_bp = Blueprint('lims', __name__, template_folder='templates',
+                    static_folder='static',
+                    static_url_path='/lims/static')
 
 
 @lims_bp.route('/')
 def index():
     """Display the overview page with search functions."""
     return render_template('index.html')
+
+
+@lims_bp.route('/react')
+def react():
+    """Display the overview page with search functions."""
+    return render_template('react.html')
 
 
 @lims_bp.route('/samples/<lims_id>')
@@ -23,7 +31,10 @@ def sample(lims_id):
     except requests.HTTPError as error:
         logger.warn(error.message)
         return abort(404, error.message)
-    return render_template('sample.html', sample=sample_obj)
+    if 'json' in request.args:
+        return jsonify(**sample_obj)
+    else:
+        return render_template('sample.html', sample=sample_obj)
 
 
 @lims_bp.route('/samples', methods=['POST'])
