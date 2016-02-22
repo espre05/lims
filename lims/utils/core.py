@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-ANALYSIS_MAP = {'EXO': 'exomes', 'WGS': 'genomes', 'RML': 'unknown'}
+ANALYSIS_MAP = {'EXO': 'exomes', 'WGS': 'genomes', 'RML': 'unknown',
+                'MWG': 'microbial', 'MET': 'microbial', '16S': 'microbial'}
 PRIORITIES = ['standard', 'priority', 'express', 'acute']
 
 
@@ -16,10 +17,15 @@ def transform_entry(lims_sample):
     """Transform LIMS sample to dict."""
     data = dict(lims_sample.udf.items())
     if 'Sequencing Analysis' in lims_sample.udf:
-        app_tag = analysis_info(lims_sample)
-        # millions of reads
-        target_reads = app_tag['reads'] * 1000000
-        ianalysis_type = ANALYSIS_MAP[app_tag['analysis']]
+        try:
+            app_tag = analysis_info(lims_sample)
+            # millions of reads
+            target_reads = app_tag.get('reads', app_tag.get('coverage'))
+            ianalysis_type = ANALYSIS_MAP[app_tag['analysis']]
+        except ValueError:
+            app_tag = {}
+            target_reads = None
+            ianalysis_type = None
     else:
         app_tag = None
         target_reads = None
@@ -74,16 +80,29 @@ def analysis_info(lims_sample):
 
 def parse_application_tag(app_tag):
     """Parse out the components of the application tag."""
-    if len(app_tag) == 9:
+    if len(app_tag) == 10:
+        data = {'analysis': app_tag[:3], 'library': app_tag[3:6]}
+        if app_tag[6] == 'K':
+            data['reads'] = int(app_tag[7:]) * 1000
+        elif app_tag[6] == 'R':
+            data['reads'] = int(app_tag[7:]) * 1000000
+        elif app_tag[6] == 'C':
+            data['coverage'] = int(app_tag[7:])
+
+    elif len(app_tag) == 9:
         data = {'analysis': app_tag[:3], 'library': app_tag[3:6],
-                'reads': int(app_tag[6:])}
+                'reads': int(app_tag[6:]) * 1000000}
+
     elif len(app_tag) == 8:
-        data = {'analysis': 'EXO', 'library': 'SXT', 'reads': int(app_tag[5:])}
-    elif len(app_tag) == 10:
-        data = {'analysis': app_tag[:3], 'library': app_tag[3:6],
-                'reads': int(app_tag[7:10])}
+        # EXOSX100, EXSTA100
+        data = {'analysis': 'EXO', 'library': 'SXT',
+                'reads': int(app_tag[5:]) * 1000000}
+
     elif len(app_tag) == 12:
-        data = {'analysis': 'EXO', 'library': 'SXT', 'reads': 100}
+        # EXSTATRIO100
+        data = {'analysis': 'EXO', 'library': 'SXT', 'reads': 100000000}
+
     else:
         raise ValueError("unknown application tag: {}".format(app_tag))
+
     return data
