@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 ANALYSIS_MAP = {'EXO': 'exomes', 'WGS': 'genomes', 'RML': 'unknown',
-                'MWG': 'microbial', 'MET': 'microbial', '16S': 'microbial'}
+                'MWG': 'microbial', 'MET': 'microbial', '16S': 'microbial',
+                'EXX': 'exomes', 'WGX': 'genomes'}
 PRIORITIES = ['standard', 'priority', 'express', 'acute']
 
 

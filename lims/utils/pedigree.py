@@ -15,7 +15,7 @@ from .core import analysis_type, collect_case, internal_id
 MANDATORY_HEADERS = ('Family ID', 'Individual ID', 'Paternal ID',
                      'Maternal ID', 'Sex', 'Phenotype')
 WES_ONLY_HEADERS = ('Capture_kit',)
-SCOUT_HEADERS = ('Clinical_db', 'display_name')
+SCOUT_HEADERS = ('Clinical_db', 'display_name', 'Sequencing_type')
 WES_HEADERS = MANDATORY_HEADERS + WES_ONLY_HEADERS + SCOUT_HEADERS
 WGS_HEADERS = MANDATORY_HEADERS + SCOUT_HEADERS
 CAPTUREKIT_MAP = {'Agilent Sureselect CRE': 'Agilent_SureSelectCRE.V1',
@@ -117,8 +117,10 @@ def transform_entry(lims, sample, id_dict):
     if analysis_tag == 'exomes':
         logger.debug('run as WES, expect capture kit')
         data['Capture_kit'] = get_capturekit(lims, sample)
+        data['Sequencing_type'] = 'WES'
     elif analysis_tag == 'genomes':
         logger.debug('run as WGS, skip capture kit')
+        data['Sequencing_type'] = 'WGS'
     else:
         raise AttributeError('unexpected application tag')
 
